@@ -8,6 +8,7 @@ import {db,auth} from "./firebase.js"
 import Header from './Header';
 import firebase from 'firebase'
 import FlipMove from 'react-flip-move';
+import Sidebar from './Sidebar';
 
 
 function App() {
@@ -80,10 +81,17 @@ const handleUsername = (user) => {
   return (
     <div className="app">
       <Header usernameHandler = {handleUsername}/>
-      <h1>Main Chat</h1>
-      {/* <p className="app__description">Enter "CLR" to clear the chat</p> */}
+      
+     <div className="app__main">
+     <div className="app__left">
+        <Sidebar />
+      </div>
+      
+      <div className="app__right">
+        <h1>Main Chat</h1>
+        {/* <p className="app__description">Enter "CLR" to clear the chat</p> */}
         
-      <div className="app__core">
+      
         <div className="app__messages">
         <FlipMove>
           {messages.map(({message, id})=>(
@@ -101,12 +109,15 @@ const handleUsername = (user) => {
 
         <IconButton
           disabled={!input} variant='contained' color='primary' type="submit" onClick={sendMessage} className="app__submit">
-            <SendIcon />
+            <SendIcon className="app__sendIcon"/>
         </IconButton>
 
       </FormControl>
     </form>
       </div>  
+     </div>
+     
+    
       
 
       

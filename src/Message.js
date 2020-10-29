@@ -7,7 +7,7 @@ const Message = forwardRef(({message, username}, ref) => {
     
     return (
         <div ref={ref} className={`message ${isUser && 'message__user'}`}>
-            <Card className={isUser? "message__userCard" : "message__guestCard"}>
+            <Card className={`MuiPaper-rounded ${isUser? "message__userCard" : "message__guestCard"}`}>
                 <CardContent>
                     
                     <Typography 
