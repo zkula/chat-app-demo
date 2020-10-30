@@ -8,6 +8,7 @@
   margin: auto;
   color: white;
   background-color: black;
+  border-radius: 100px;
 }
 
 .header__left {
@@ -42,6 +43,7 @@
 
 .header__rightLogin {
   background-color: white;
+  border-radius: 30px;
 }
 
 .header__right > h3 {
@@ -50,6 +52,7 @@
 
 .app__loginContainer {
   background-color: white;
+  border-radius: 30px;
 }
 
 .loginButton {
@@ -57,5 +60,5 @@
 }
 
 .logoutButton {
-  border-radius: 20px;
+  border-radius: 20px !important;
 }
