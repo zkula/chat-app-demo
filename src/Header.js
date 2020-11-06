@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Header.css";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import { Button, Input } from "@material-ui/core";
@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 function Header({ usernameHandler }) {
   const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false); //for sign up modal
+  const [name, setName] = useState("NAME");
 
   /* For Modal */
   const classes = useStyles();
@@ -46,9 +47,18 @@ function Header({ usernameHandler }) {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         //user has logged in
-        console.log("USER", authUser);
-        setUser(authUser);
-        usernameHandler(user);
+        // setUser(authUser);
+        console.log("AUTHUSER", authUser, authUser.uid, authUser.displayName);
+        // console.log("Username", name);
+        // setUser({
+        //   id: authUser.uid,
+        //   user: authUser.displayName,
+        // });
+        setUser({
+          id: authUser.uid,
+          // user: name,
+          user: authUser.displayName,
+        });
       } else {
         //user has logged out
         setUser(null);
@@ -58,13 +68,23 @@ function Header({ usernameHandler }) {
       //Perform some cleanup actions before refiring the useEffect
       unsubscribe();
     };
-  }, [user, username]);
+  }, []);
+
+  useEffect(() => {
+    usernameHandler(user);
+  }, [user]);
 
   const signUp = (event) => {
     event.preventDefault();
     auth
       .createUserWithEmailAndPassword(email, password)
       .then((authUser) => {
+        console.log("signup auth user -> ", authUser);
+        db.collection("users").doc(authUser.user.uid).set({
+          user: username,
+          id: authUser.user.uid,
+        });
+        setName(username);
         return authUser.user.updateProfile({
           displayName: username,
         });
@@ -167,7 +187,7 @@ function Header({ usernameHandler }) {
       <div className="header__right">
         <div className="header__rightUser">
           <p>Welcome</p>
-          <h4>{user ? user.displayName : "Guest"}</h4>
+          <h4>{user ? user.user : "Guest"}</h4>
         </div>
         <div className="header__rightLogin">
           {/*Conditional Sign Out If user exists */}

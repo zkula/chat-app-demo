@@ -26,10 +26,11 @@
 
 .app__right > h1 {
   color: white;
-  height: 0;
-  background-color: rgba(190, 156, 4, 0);
-  overflow: visible;
-  z-index: 1;
+  background: none;
+  /* height: 0; */
+  /* background-color: rgba(190, 156, 4, 0); */
+  /* overflow: visible;
+  z-index: 1; */
 }
 
 .app__messages::-webkit-scrollbar {

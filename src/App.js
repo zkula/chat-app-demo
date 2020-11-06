@@ -18,28 +18,29 @@ function App() {
       message: "Please enter a message",
     },
   ]);
-  const [username, setUsername] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [username, setUsername] = useState("guest");
+  const [user, setUser] = useState(null);
+  const [currentChat, setCurrentChat] = useState("MainChat");
+  const [chatName, setChatName] = useState("MainChat");
 
   useEffect(() => {
+    console.log("useEff", currentChat);
     //run once when the app loads
-    db.collection("messages")
+    db.collection("chats")
+      .doc(currentChat)
+      .collection("messages")
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
-        if (isDeleting === false) {
-          setMessages(
-            snapshot.docs.map((doc) => ({ id: doc.id, message: doc.data() }))
-          );
-        }
+        setMessages(
+          snapshot.docs.map((doc) => ({ id: doc.id, message: doc.data() }))
+        );
       });
-  }, []);
+  }, [currentChat]);
 
-  const sendMessage = (event) => {
+  const sendMessage = async (event) => {
     //DB Logic
     event.preventDefault();
     if (input === "CLR") {
-      setIsDeleting(true);
-
       setMessages([
         {
           username: null,
@@ -47,8 +48,10 @@ function App() {
         },
       ]);
 
-      messages.map(({ message, id }) =>
+      await messages.map(({ message, id }) =>
         db
+          .collection("chats")
+          .doc(currentChat)
           .collection("messages")
           .doc(id)
           .delete()
@@ -57,15 +60,14 @@ function App() {
           })
       );
 
-      setIsDeleting(false);
-
-      db.collection("messages").add({
+      await db.collection("chats").doc(currentChat).collection("messages").add({
         username: "Welcome",
         message: "Please enter a message",
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       });
     } else {
-      db.collection("messages").add({
+      console.log("USERNMAEHEY", username ? username : "no username :(");
+      await db.collection("chats").doc(currentChat).collection("messages").add({
         message: input,
         username: username,
         timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -75,9 +77,20 @@ function App() {
     setInput("");
   };
 
-  const handleUsername = (user) => {
-    console.log("HANDLER", user);
-    setUsername(user?.displayName);
+  const handleUsername = (updatedUser) => {
+    if (updatedUser) {
+      console.log("HANDLER", updatedUser);
+      console.log("displayname", updatedUser?.user);
+      setUsername(updatedUser.user);
+      setUser(updatedUser);
+      console.log("USERNAME", updatedUser.user, username);
+    }
+  };
+
+  const handleChat = async (chat) => {
+    setCurrentChat(chat.id);
+    setChatName(chat.chatName);
+    console.log("UPDATE CHAT", currentChat, chat.id);
   };
 
   return (
@@ -86,11 +99,11 @@ function App() {
 
       <div className="app__main">
         <div className="app__left">
-          <Sidebar />
+          <Sidebar currentUser={user} updateChat={handleChat} />
         </div>
 
         <div className="app__right">
-          <h1>Main Chat</h1>
+          <h1>{chatName}</h1>
           {/* <p className="app__description">Enter "CLR" to clear the chat</p> */}
 
           <div className="app__messages">
@@ -108,7 +121,6 @@ function App() {
                 placeholder="Enter a message..."
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
-                className="app__input"
               />
 
               <IconButton
