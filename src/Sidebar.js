@@ -119,13 +119,16 @@ function Sidebar({ currentUser, updateChat }) {
 
   return (
     <div className="sidebar">
-      <h2>Chats</h2>
-      <ul className="sidebar__ul">
+      <h2>Chat with everyone</h2>
+      <div className="sidebar__list" onClick={() => handleMainChat()}>
+        <h3>Main Chat</h3>
+      </div>
+      {/* <ul className="sidebar__ul">
         <li className="sidebar__li" onClick={() => handleMainChat()}>
           <h3>Main Chat</h3>
         </li>
-      </ul>
-      <h2>Start a new chat</h2>
+      </ul> */}
+      <h2>Chat with a user</h2>
       <ul className="sidebar__ul">
         {users.map(
           (u) =>

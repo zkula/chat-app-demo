@@ -83,7 +83,7 @@ function App() {
       console.log("displayname", updatedUser?.user);
       setUsername(updatedUser.user);
       setUser(updatedUser);
-      console.log("USERNAME", updatedUser.user, username);
+      console.log("USERNAME", updatedUser.user);
     }
   };
 

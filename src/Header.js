@@ -4,6 +4,7 @@ import { auth, db } from "./firebase";
 import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import { Button, Input } from "@material-ui/core";
+import firebase from "firebase";
 
 /*FROM MATERIAL UI - STYLING MODAL */
 function getModalStyle() {
@@ -42,8 +43,12 @@ function Header({ usernameHandler }) {
   const [email, setEmail] = useState("");
   const [openSignIn, setOpenSignIn] = useState(false);
 
+  // CURRENT ISSUE -> SOMETIMES USER NOT SENT THROUGH PROPERLY WHEN NEW USER CREATED.
+  //USER.DISPLAYNAME IS SENDING AS NULL WHEN THE OBJECT ACTUALLY HAS A USERNAME THERE. WTF?
+
   //useEFFECT -> Runs a piece of code based on a specific condition
   useEffect(() => {
+    console.log("firebase -> ", firebase.auth());
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         //user has logged in
@@ -182,7 +187,7 @@ function Header({ usernameHandler }) {
           src="https://facebookbrand.com/wp-content/uploads/2018/09/Header-e1538151782912.png?w=399&h=399"
           alt="FB"
         />
-        <input type="text" />
+        {/* <input type="text" /> */}
       </div>
       <div className="header__right">
         <div className="header__rightUser">
