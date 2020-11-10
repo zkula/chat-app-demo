@@ -2,9 +2,23 @@ import React, { useEffect, useState } from "react";
 import "./Sidebar.css";
 import { db, auth } from "./firebase.js";
 import firebase from "firebase";
+import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
 
 function Sidebar({ currentUser, updateChat }) {
   const [users, setUsers] = useState([]);
+  //TODO: Create array of chat objects that keeps track of notifications
+  //Turn notification bell off once chat is opened
+  //create useEff w snapshot
+  const [chats, setChats] = useState([
+    {
+      chatId: 123456,
+      notify: false,
+    },
+    {
+      chatId: 298384,
+      notify: true,
+    },
+  ]);
   // const [chatId, setChatId] = useState(null);
 
   useEffect(() => {
@@ -119,30 +133,37 @@ function Sidebar({ currentUser, updateChat }) {
 
   return (
     <div className="sidebar">
-      <h2>Chat with everyone</h2>
-      <div className="sidebar__list" onClick={() => handleMainChat()}>
-        <h3>Main Chat</h3>
+      <div className="sidebar__groups">
+        <h2>Group Chats</h2>
+        <div className="sidebar__list" onClick={() => handleMainChat()}>
+          <h3>Main Chat</h3>
+        </div>
       </div>
       {/* <ul className="sidebar__ul">
         <li className="sidebar__li" onClick={() => handleMainChat()}>
           <h3>Main Chat</h3>
         </li>
       </ul> */}
-      <h2>Chat with a user</h2>
-      <ul className="sidebar__ul">
-        {users.map(
-          (u) =>
-            u.id !== currentUser.id && (
-              <li
-                key={u.id}
-                className="sidebar__li"
-                onClick={() => handleChat(u)}
-              >
-                <h3>{u.user}</h3>
-              </li>
-            )
-        )}
-      </ul>
+      <div className="sidebar__usersList">
+        {!currentUser && <h2>Login to</h2>}
+        <h2>Chat with a user</h2>
+        <ul className="sidebar__ul">
+          {users?.map(
+            (u) =>
+              u?.id !== currentUser?.id && (
+                <li
+                  key={u?.id}
+                  className={`sidebar__li ${
+                    !currentUser && "sidebar__hideUsers"
+                  }`}
+                  onClick={() => currentUser && handleChat(u)}
+                >
+                  <h3>{u?.user}</h3>
+                </li>
+              )
+          )}
+        </ul>
+      </div>
     </div>
   );
 }

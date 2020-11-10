@@ -21,10 +21,10 @@ function App() {
   const [username, setUsername] = useState("guest");
   const [user, setUser] = useState(null);
   const [currentChat, setCurrentChat] = useState("MainChat");
-  const [chatName, setChatName] = useState("MainChat");
+  const [chatName, setChatName] = useState("Main Chat");
 
   useEffect(() => {
-    console.log("useEff", currentChat);
+    console.log("Loading Chat", currentChat);
     //run once when the app loads
     db.collection("chats")
       .doc(currentChat)
@@ -77,14 +77,19 @@ function App() {
     setInput("");
   };
 
-  const handleUsername = (updatedUser) => {
+  const handleNewUser = (updatedUser) => {
     if (updatedUser) {
       console.log("HANDLER", updatedUser);
       console.log("displayname", updatedUser?.user);
       setUsername(updatedUser.user);
       setUser(updatedUser);
-      console.log("USERNAME", updatedUser.user);
+    } else {
+      console.log("No User Here", updatedUser);
+      setUsername(null);
+      setUser(null);
     }
+    setCurrentChat("MainChat");
+    setChatName("Main Chat");
   };
 
   const handleChat = async (chat) => {
@@ -95,7 +100,7 @@ function App() {
 
   return (
     <div className="app">
-      <Header usernameHandler={handleUsername} />
+      <Header usernameHandler={handleNewUser} />
 
       <div className="app__main">
         <div className="app__left">

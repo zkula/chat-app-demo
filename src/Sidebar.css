@@ -1,21 +1,35 @@
 .sidebar {
   width: 250px;
-  /* height: 94vh; */
+  height: 90vh;
   margin: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 
-.sidebar > h2 {
+.sidebar__groups,
+.sidebar__usersList > h2 {
   color: white;
 }
 
+.sidebar__groups {
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .sidebar__ul {
-  width: 100%;
+  width: 95%;
+  margin: auto;
   padding-left: 0;
-  margin-top: 10px;
-  margin-bottom: 60px;
-  height: 42vh;
+  height: 50vh;
   overflow: hidden;
   overflow-y: scroll;
+}
+
+.sidebar__ul > h4 {
+  color: white;
+  margin: 10px;
 }
 
 .sidebar__ul::-webkit-scrollbar {
@@ -27,10 +41,9 @@
   list-style-type: none;
   border-bottom: 1px solid black;
   background-color: #e9e9eb;
+  color: black;
   cursor: pointer;
-  margin-top: 10px;
-  margin-bottom: 60px;
-  overflow-y: auto;
+  margin: 5px;
   border-radius: 20px;
 }
 
@@ -42,4 +55,9 @@
   cursor: pointer;
   margin: 5px;
   border-radius: 20px;
+}
+
+.sidebar__hideUsers {
+  pointer-events: none;
+  opacity: 0.7;
 }

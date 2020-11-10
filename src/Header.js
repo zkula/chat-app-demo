@@ -46,7 +46,7 @@ function Header({ usernameHandler }) {
   // CURRENT ISSUE -> SOMETIMES USER NOT SENT THROUGH PROPERLY WHEN NEW USER CREATED.
   //USER.DISPLAYNAME IS SENDING AS NULL WHEN THE OBJECT ACTUALLY HAS A USERNAME THERE. WTF?
 
-  //useEFFECT -> Runs a piece of code based on a specific condition
+  // useEFFECT -> Runs a piece of code based on a specific condition
   useEffect(() => {
     console.log("firebase -> ", firebase.auth());
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
@@ -55,15 +55,13 @@ function Header({ usernameHandler }) {
         // setUser(authUser);
         console.log("AUTHUSER", authUser, authUser.uid, authUser.displayName);
         // console.log("Username", name);
-        // setUser({
-        //   id: authUser.uid,
-        //   user: authUser.displayName,
-        // });
-        setUser({
-          id: authUser.uid,
-          // user: name,
-          user: authUser.displayName,
-        });
+        if (authUser.displayName && authUser.uid) {
+          setUser({
+            id: authUser.uid,
+            // user: name,
+            user: authUser.displayName,
+          });
+        }
       } else {
         //user has logged out
         setUser(null);
@@ -89,7 +87,11 @@ function Header({ usernameHandler }) {
           user: username,
           id: authUser.user.uid,
         });
-        setName(username);
+        setUser({
+          id: authUser.user.uid,
+          user: username,
+        });
+        // setName(username);
         return authUser.user.updateProfile({
           displayName: username,
         });
@@ -103,16 +105,24 @@ function Header({ usernameHandler }) {
     event.preventDefault();
     auth
       .signInWithEmailAndPassword(email, password)
+      .then((authUser) => {
+        console.log("USER SIGN IN -> ", authUser);
+        setUser({
+          user: authUser.user.displayName,
+          id: authUser.user.uid,
+        });
+      })
       .catch((error) => alert(error.message));
     setOpenSignIn(false);
   };
 
-  // const signOut = () => {
-  //     if (user) {
-  //       auth.signOut();
-  //     }
-  //     setUser (null);
-  //   };
+  const signOut = (u) => {
+    if (u) {
+      auth.signOut();
+    }
+    console.log("USER SIGNED OUT");
+    setUser(null);
+  };
 
   return (
     <div className="header">
@@ -122,7 +132,7 @@ function Header({ usernameHandler }) {
             <center>
               <img
                 className="app__headerImage"
-                src="http://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"
+                src="https://facebookbrand.com/wp-content/uploads/2018/09/Header-e1538151782912.png?w=399&h=399"
                 alt=""
               ></img>
             </center>
@@ -158,7 +168,7 @@ function Header({ usernameHandler }) {
             <center>
               <img
                 className="app__headerImage"
-                src="http://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"
+                src="https://facebookbrand.com/wp-content/uploads/2018/09/Header-e1538151782912.png?w=399&h=399"
                 alt=""
               ></img>
             </center>
@@ -197,7 +207,7 @@ function Header({ usernameHandler }) {
         <div className="header__rightLogin">
           {/*Conditional Sign Out If user exists */}
           {user ? (
-            <Button className="logoutButton" onClick={() => auth.signOut()}>
+            <Button className="logoutButton" onClick={(user) => signOut(user)}>
               Logout
             </Button>
           ) : (
